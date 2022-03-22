@@ -3537,9 +3537,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
-
-    if ( buffs.boon_of_azeroth )
-      h *= 1.0 / ( 1.0 + buffs.boon_of_azeroth->data().effectN( 2 ).percent() );
   }
 
   return h;

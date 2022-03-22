@@ -3371,12 +3371,13 @@ void player_t::create_buffs()
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
 
-      // 9.2 Jailer raid buff 
-      buffs.boon_of_azeroth = make_buff( this, "boon_of_azeroth", find_spell( 363338 ) )
-        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
-        ->add_invalidate( CACHE_HASTE )
-        ->add_invalidate( CACHE_VERSATILITY )
-        ->add_invalidate( CACHE_MASTERY );
+      // 9.2 Jailer raid buff
+      buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
+        ->add_stat( STAT_MASTERY_RATING, 350 )
+        ->set_default_value_from_effect( 2 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
   }
   // .. for enemies
@@ -3657,8 +3658,6 @@ double player_t::composite_melee_crit_chance() const
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
 
-  ac += buffs.boon_of_azeroth->data().effectN( 3 ).percent();
-
   return ac;
 }
 
@@ -3881,9 +3880,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.power_infusion )
       h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
-
-    if ( buffs.boon_of_azeroth )
-      h *= 1.0 / ( 1.0 + buffs.boon_of_azeroth->data().effectN( 2 ).percent() );
   }
 
   return h;
@@ -3966,11 +3962,6 @@ double player_t::composite_spell_crit_chance() const
   if ( buffs.focus_magic )
     sc += buffs.focus_magic->check_value();
 
-  if ( buffs.boon_of_azeroth )
-  {
-    sc += buffs.boon_of_azeroth->data().effectN( 3 ).percent();
-  }
-
   return sc;
 }
 
@@ -4018,9 +4009,6 @@ double player_t::composite_damage_versatility() const
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
-  if (buffs.boon_of_azeroth )
-    cdv += buffs.boon_of_azeroth->data().effectN( 4 ).percent();
-
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -4044,9 +4032,6 @@ double player_t::composite_heal_versatility() const
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
-  if ( buffs.boon_of_azeroth )
-    chv += buffs.boon_of_azeroth->data().effectN( 4 ).percent();
-
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -4069,9 +4054,6 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
-
-  if ( buffs.boon_of_azeroth )
-    cmv += buffs.boon_of_azeroth->data().effectN( 4 ).percent();
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;

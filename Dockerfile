@@ -78,6 +78,7 @@ RUN \
 # get compiled simc and profiles
 COPY --from=build /app/SimulationCraft/engine/simc /app/SimulationCraft/
 COPY --from=build /app/SimulationCraft/profiles/ /app/SimulationCraft/profiles/
+COPY --from=build /app/SimulationCraft/.git/refs/heads/dragonflight /app/SimulationCraft/.git/refs/heads/dragonflight
 
 WORKDIR /app/SimulationCraft
 

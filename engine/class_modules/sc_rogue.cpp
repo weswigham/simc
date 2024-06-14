@@ -1830,8 +1830,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
-    ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
-
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
 
@@ -2963,6 +2961,11 @@ struct rogue_poison_t : public rogue_attack_t
     if ( s->affected_by( p->talent.assassination.improved_poisons->effectN( 1 ) ) )
     {
       base_proc_chance += p->talent.assassination.improved_poisons->effectN( 1 ).percent();
+    }
+    if ( p->talent.fatebound.destiny_defined->ok() && s->affected_by( p->talent.fatebound.destiny_defined->effectN( 1 ) ) )
+    {
+      // Yes this applies to outlaw as well as assassination, probably
+      base_proc_chance += p->talent.fatebound.destiny_defined->effectN( 1 ).percent();
     }
   }
 
